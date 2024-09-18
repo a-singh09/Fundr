@@ -7,12 +7,12 @@ import {VotingPowerToken} from "../../src/VotingPowerToken.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {MockERC20} from "../../src/mocks/MockERC20.sol";
-import {FairFund} from "../../src/FairFund.sol";
-import {DeployFairFund} from "../../script/DeployFairFund.s.sol";
+import {Fundr} from "../../src/Fundr.sol";
+import {DeployFundr} from "../../script/DeployFundr.s.sol";
 
 contract FundingVaultTest is Test {
     FundingVault fundingVault;
-    FairFund fairFund;
+    Fundr fundr;
     MockERC20 fundingToken;
     MockERC20 votingToken;
     VotingPowerToken votingPowerToken;
@@ -21,8 +21,8 @@ contract FundingVaultTest is Test {
     address randomUser1 = makeAddr("randomUser1");
 
     function setUp() external {
-        DeployFairFund deployFairFund = new DeployFairFund();
-        (fairFund,) = deployFairFund.run();
+        DeployFundr deployFundr = new DeployFundr();
+        (fundr,) = deployFundr.run();
         fundingToken = new MockERC20("FundingToken", "FTK");
         votingToken = new MockERC20("VotingToken", "VTK");
         votingPowerToken = new VotingPowerToken("VotingPowerToken", "VOTE");
@@ -33,7 +33,7 @@ contract FundingVaultTest is Test {
             1,
             10 ether,
             block.timestamp + 1 days,
-            address(fairFund)
+            address(fundr)
         );
         votingPowerToken.transferOwnership(address(fundingVault));
     }

@@ -15,7 +15,7 @@ import axios from 'axios';
 
 import { cn } from '@/lib/utils';
 import { config as wagmiConfig } from '@/wagmi/config';
-import { erc20ABI, fairFund } from '@/blockchain/constants';
+import { erc20ABI, Fundr } from '@/blockchain/constants';
 
 import {
     Form,
@@ -135,8 +135,8 @@ export default function VaultForm({
                 const { result, request } = await simulateContract(
                     wagmiConfig,
                     {
-                        address: fairFund.address as `0x${string}`,
-                        abi: fairFund.abi,
+                        address: Fundr.address as `0x${string}`,
+                        abi: Fundr.abi,
                         functionName: 'deployFundingVault',
                         args: [
                             data.fundingTokenAddress,

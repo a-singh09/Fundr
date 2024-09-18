@@ -1,1 +1,1 @@
-# FairFund Frontend.
+# Fundr Frontend.

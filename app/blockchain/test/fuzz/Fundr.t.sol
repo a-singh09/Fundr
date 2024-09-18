@@ -2,19 +2,19 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {FairFund} from "../../src/FairFund.sol";
+import {Fundr} from "../../src/Fundr.sol";
 import {FundingVault} from "../../src/FundingVault.sol";
 import {VotingPowerToken} from "../../src/VotingPowerToken.sol";
-import {DeployFairFund} from "../../script/DeployFairFund.s.sol";
+import {DeployFundr} from "../../script/DeployFundr.s.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 
-contract FairFundTest is Test {
+contract FundrTest is Test {
     HelperConfig helperConfig;
-    FairFund fairFund;
+    Fundr fundr;
 
     function setUp() external {
-        DeployFairFund deployFairFund = new DeployFairFund();
-        (fairFund, helperConfig) = deployFairFund.run();
+        DeployFundr deployFundr = new DeployFundr();
+        (fundr, helperConfig) = deployFundr.run();
     }
 
     function testFuzzDeployFundingVault(
@@ -32,12 +32,10 @@ contract FairFundTest is Test {
         vm.assume(_maxRequestableAmount > 0);
         vm.assume(_minRequestableAmount <= _maxRequestableAmount);
 
-        fairFund.deployFundingVault(
-            _fundingToken, _votingToken, _minRequestableAmount, _maxRequestableAmount, _tallyDate
-        );
+        fundr.deployFundingVault(_fundingToken, _votingToken, _minRequestableAmount, _maxRequestableAmount, _tallyDate);
 
-        uint256 totalVaults = fairFund.getTotalNumberOfFundingVaults();
-        address fundingVaultAddress = fairFund.getFundingVault(totalVaults);
+        uint256 totalVaults = fundr.getTotalNumberOfFundingVaults();
+        address fundingVaultAddress = fundr.getFundingVault(totalVaults);
         assertEq(totalVaults, 1);
         assertTrue(fundingVaultAddress != address(0));
     }

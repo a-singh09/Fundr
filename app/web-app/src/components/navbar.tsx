@@ -1,6 +1,5 @@
 'use client';
 import Link from 'next/link';
-import VoteIcon from '@/components/vote-icon';
 import ConnectWalletButton from '@/components/connect-wallet-button';
 import MobileNavbar from '@/components/mobile-navbar';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -22,9 +21,8 @@ export default function Navbar() {
     return (
         <nav className="fixed w-full z-50 flex justify-between items-center py-4 px-4 border-b border-primary/10 bg-secondary/80">
             <Link href={'/'} className="flex items-center group">
-                <VoteIcon className="h-8 w-8 transition-transform group-hover:scale-110" />
                 <h1 className="ml-2 text-2xl font-bold text-primary group-hover:text-primary/80 transition-colors">
-                    fairfund
+                    Fundr
                 </h1>
             </Link>
             <div className="hidden md:flex items-center gap-2">

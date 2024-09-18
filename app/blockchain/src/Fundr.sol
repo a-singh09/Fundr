@@ -26,21 +26,23 @@ pragma solidity ^0.8.20;
  * getters
  */
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {MockFundingVault} from "./MockFundingVault.sol";
-import {MockVotingPowerToken} from "./MockVotingPowerToken.sol";
+import {FundingVault} from "./FundingVault.sol";
+import {VotingPowerToken} from "./VotingPowerToken.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @title FairFund
+ * @title Fundr
  * @author Aditya Bhattad
- * @notice This is the main FairFund contract that will be used for deployment and keeping track of all the funding vaults.
+ * @notice This is the main Fundr contract that will be used for deployment and keeping track of all the funding vaults.
  */
-contract MockFairFund is Ownable {
+contract Fundr is Ownable {
     // Errors //
-    error FairFund__CannotBeAZeroAddress();
-    error FairFund__MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount();
-    error FairFund__MaxRequestableAmountCannotBeZero();
+    error Fundr__CannotBeAZeroAddress();
+    error Fundr__TallyDateCannotBeInThePast();
+    error Fundr__MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount();
+    error Fundr__MaxRequestableAmountCannotBeZero();
+    error Fundr__TransferFailed(address token, address recepient, uint256 amount);
 
     // State Variables //
     uint256 private s_fundingVaultIdCounter;
@@ -49,9 +51,10 @@ contract MockFairFund is Ownable {
 
     // Events //
     event FundingVaultDeployed(address indexed fundingVault);
+    event TransferTokens(address indexed token, address indexed recepient, uint256 amount);
 
     /**
-     * @param _platformFee The fee that will be charged by the platform for using the FairFund platform
+     * @param _platformFee The fee that will be charged by the platform for using the Fundr platform
      */
     constructor(uint256 _platformFee) Ownable(msg.sender) {
         s_platformFee = _platformFee;
@@ -74,13 +77,16 @@ contract MockFairFund is Ownable {
         uint256 _tallyDate
     ) external returns (address) {
         if (_fundingToken == address(0) || _votingToken == address(0)) {
-            revert FairFund__CannotBeAZeroAddress();
+            revert Fundr__CannotBeAZeroAddress();
+        }
+        if (_tallyDate < block.timestamp) {
+            revert Fundr__TallyDateCannotBeInThePast();
         }
         if (_minRequestableAmount > _maxRequestableAmount) {
-            revert FairFund__MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount();
+            revert Fundr__MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount();
         }
         if (_maxRequestableAmount == 0) {
-            revert FairFund__MaxRequestableAmountCannotBeZero();
+            revert Fundr__MaxRequestableAmountCannotBeZero();
         }
 
         s_fundingVaultIdCounter++;
@@ -88,8 +94,8 @@ contract MockFairFund is Ownable {
         string memory fundingVaultIdString = Strings.toString(fundingVaultId);
         string memory votingPowerTokenName = string.concat("Voting Power Token ", fundingVaultIdString);
         string memory votingPowerTokenSymbol = string.concat("VOTE_", fundingVaultIdString);
-        MockVotingPowerToken votingPowerToken = new MockVotingPowerToken(votingPowerTokenName, votingPowerTokenSymbol);
-        MockFundingVault fundingVault = new MockFundingVault(
+        VotingPowerToken votingPowerToken = new VotingPowerToken(votingPowerTokenName, votingPowerTokenSymbol);
+        FundingVault fundingVault = new FundingVault(
             _fundingToken,
             _votingToken,
             address(votingPowerToken),
@@ -104,8 +110,31 @@ contract MockFairFund is Ownable {
         return address(fundingVault);
     }
 
+    /**
+     * @notice Modifies the platform fee (only callable by the owner)
+     * @param _platformFee The new platform fee percentage to be set (i.e. 1 for 1% of amount every proposal will get.)
+     */
     function modityPlatformFee(uint256 _platformFee) external onlyOwner {
         s_platformFee = _platformFee;
+    }
+
+    /**
+     * @notice Withdraws the accumulated platform fees to a specified recipient (only callable by the owner)
+     * @param recepient The address to receive the withdrawn fees
+     * @param token The address of the token to withdraw
+     */
+    function withdrawPlatformFee(address recepient, address token) external onlyOwner {
+        if (recepient == address(0) || token == address(0)) {
+            revert Fundr__CannotBeAZeroAddress();
+        }
+        uint256 platformBalance = IERC20(token).balanceOf(address(this));
+        if (platformBalance != 0) {
+            bool success = IERC20(token).transfer(recepient, platformBalance);
+            if (!success) {
+                revert Fundr__TransferFailed(token, recepient, platformBalance);
+            }
+            emit TransferTokens(token, recepient, platformBalance);
+        }
     }
 
     // Getters //

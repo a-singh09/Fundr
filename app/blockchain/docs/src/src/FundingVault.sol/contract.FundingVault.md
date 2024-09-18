@@ -1,5 +1,6 @@
 # FundingVault
-[Git Source](https://github.com/StabilityNexus/FairFund/blob/64b2ecb7c60a5a1802be455db0565e9d73fc2a00/app/blockchain/src/FundingVault.sol)
+
+[Git Source](https://github.com/StabilityNexus/Fundr/blob/64b2ecb7c60a5a1802be455db0565e9d73fc2a00/app/blockchain/src/FundingVault.sol)
 
 **Inherits:**
 ReentrancyGuard
@@ -9,7 +10,6 @@ Aditya Bhattad
 
 A contract that allows users to deposit funds and vote on proposals, after voting ends anyone can call distributeFunds to distribute the funds to the proposals
 Whether a proposal is selected for receiving funds is decided using this formula:
-
 
 Let:
 `V(p)` be the number of votingPowerTokens assigned to proposal `p`
@@ -24,14 +24,13 @@ The funding to be received by an accepted proposal `p` is `min(p.maximumAmount, 
 
 The funding to be received by a rejected proposal `p` is `0`.
 
-
 ## State Variables
+
 ### s_proposalIdCounter
 
 ```solidity
 uint256 private s_proposalIdCounter;
 ```
-
 
 ### i_fundingToken
 
@@ -39,13 +38,11 @@ uint256 private s_proposalIdCounter;
 IERC20 private immutable i_fundingToken;
 ```
 
-
 ### i_votingToken
 
 ```solidity
 IERC20 private immutable i_votingToken;
 ```
-
 
 ### i_votingPowerToken
 
@@ -53,13 +50,11 @@ IERC20 private immutable i_votingToken;
 VotingPowerToken private immutable i_votingPowerToken;
 ```
 
-
 ### i_deployer
 
 ```solidity
-FairFund private immutable i_deployer;
+Fundr private immutable i_deployer;
 ```
-
 
 ### s_minRequestableAmount
 
@@ -67,13 +62,11 @@ FairFund private immutable i_deployer;
 uint256 private s_minRequestableAmount;
 ```
 
-
 ### s_maxRequestableAmount
 
 ```solidity
 uint256 private s_maxRequestableAmount;
 ```
-
 
 ### s_totalBalanceAvailableForDistribution
 
@@ -81,13 +74,11 @@ uint256 private s_maxRequestableAmount;
 uint256 private s_totalBalanceAvailableForDistribution;
 ```
 
-
 ### s_totalFundsDistributed
 
 ```solidity
 uint256 private s_totalFundsDistributed;
 ```
-
 
 ### s_fundsDistributed
 
@@ -95,15 +86,13 @@ uint256 private s_totalFundsDistributed;
 bool private s_fundsDistributed;
 ```
 
-
 ### i_tallyDate
-*The date in which the tally will be taken as seconds since unix epoch*
 
+_The date in which the tally will be taken as seconds since unix epoch_
 
 ```solidity
 uint256 private immutable i_tallyDate;
 ```
-
 
 ### s_proposerToProposalIds
 
@@ -111,13 +100,11 @@ uint256 private immutable i_tallyDate;
 mapping(address proposer => uint256[] proposalIds) private s_proposerToProposalIds;
 ```
 
-
 ### s_proposals
 
 ```solidity
 mapping(uint256 proposalId => Proposal proposal) private s_proposals;
 ```
-
 
 ### s_votes
 
@@ -125,13 +112,11 @@ mapping(uint256 proposalId => Proposal proposal) private s_proposals;
 mapping(uint256 proposalId => uint256 votes) private s_votes;
 ```
 
-
 ### s_voterToVotingTokens
 
 ```solidity
 mapping(address voter => uint256 amountOfVotingTokens) private s_voterToVotingTokens;
 ```
-
 
 ### s_userToDistributionAmountDeposited
 
@@ -139,17 +124,15 @@ mapping(address voter => uint256 amountOfVotingTokens) private s_voterToVotingTo
 mapping(address user => uint256 amountDeposited) private s_userToDistributionAmountDeposited;
 ```
 
-
 ## Functions
-### tallyDatePassed
 
+### tallyDatePassed
 
 ```solidity
 modifier tallyDatePassed();
 ```
 
 ### constructor
-
 
 ```solidity
 constructor(
@@ -162,53 +145,50 @@ constructor(
     address _deployer
 );
 ```
+
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`_fundingToken`|`address`|The token that will be used to fund the proposals|
-|`_votingToken`|`address`|The token that will be locked against voting power tokens, which allows the user to vote on proposals|
-|`_votingPowerToken`|`address`|The token that will be minted when a user locks their voting tokens|
-|`_minRequestableAmount`|`uint256`|The minimum amount of token that can be requested in proposal|
-|`_maxRequestableAmount`|`uint256`|The maximum amount of token that can be requested in proposal|
-|`_tallyDate`|`uint256`|The date in which the tally will be taken as seconds since unix epoch|
-|`_deployer`|`address`|The address of the main fairfund smart contract|
-
+| Name                    | Type      | Description                                                                                           |
+| ----------------------- | --------- | ----------------------------------------------------------------------------------------------------- |
+| `_fundingToken`         | `address` | The token that will be used to fund the proposals                                                     |
+| `_votingToken`          | `address` | The token that will be locked against voting power tokens, which allows the user to vote on proposals |
+| `_votingPowerToken`     | `address` | The token that will be minted when a user locks their voting tokens                                   |
+| `_minRequestableAmount` | `uint256` | The minimum amount of token that can be requested in proposal                                         |
+| `_maxRequestableAmount` | `uint256` | The maximum amount of token that can be requested in proposal                                         |
+| `_tallyDate`            | `uint256` | The date in which the tally will be taken as seconds since unix epoch                                 |
+| `_deployer`             | `address` | The address of the main Fundr smart contract                                                          |
 
 ### deposit
 
-*Allows users to deposit fundingToken into the vault*
-
+_Allows users to deposit fundingToken into the vault_
 
 ```solidity
 function deposit(uint256 _amount) public nonReentrant;
 ```
+
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`_amount`|`uint256`|The amount of fundingToken to deposit|
-
+| Name      | Type      | Description                           |
+| --------- | --------- | ------------------------------------- |
+| `_amount` | `uint256` | The amount of fundingToken to deposit |
 
 ### register
 
-*locks votingToken from the user and mints votingPowerToken*
-
+_locks votingToken from the user and mints votingPowerToken_
 
 ```solidity
 function register(uint256 _amount) public nonReentrant;
 ```
+
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`_amount`|`uint256`|The amount of votingTokens to lock in order to receive votingPowerTokens|
-
+| Name      | Type      | Description                                                              |
+| --------- | --------- | ------------------------------------------------------------------------ |
+| `_amount` | `uint256` | The amount of votingTokens to lock in order to receive votingPowerTokens |
 
 ### submitProposal
 
-*Allows users to submit a proposal*
-
+_Allows users to submit a proposal_
 
 ```solidity
 function submitProposal(string memory _metadata, uint256 _minimumAmount, uint256 _maximumAmount, address _recipient)
@@ -216,52 +196,50 @@ function submitProposal(string memory _metadata, uint256 _minimumAmount, uint256
     nonReentrant
     returns (uint256);
 ```
+
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`_metadata`|`string`|The metadata of the proposal|
-|`_minimumAmount`|`uint256`|The minimum amount of fundingToken requested|
-|`_maximumAmount`|`uint256`|The maximum amount of fundingToken requested|
-|`_recipient`|`address`|The address that will receive the fundingToken if the proposal is accepted|
-
+| Name             | Type      | Description                                                                |
+| ---------------- | --------- | -------------------------------------------------------------------------- |
+| `_metadata`      | `string`  | The metadata of the proposal                                               |
+| `_minimumAmount` | `uint256` | The minimum amount of fundingToken requested                               |
+| `_maximumAmount` | `uint256` | The maximum amount of fundingToken requested                               |
+| `_recipient`     | `address` | The address that will receive the fundingToken if the proposal is accepted |
 
 ### voteOnProposal
 
-*Allows users to vote on a proposal*
-
+_Allows users to vote on a proposal_
 
 ```solidity
 function voteOnProposal(uint256 _proposalId, uint256 _amount) public nonReentrant;
 ```
+
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`_proposalId`|`uint256`|The id of the proposal to vote on|
-|`_amount`|`uint256`|The amount of votingToken to vote with|
-
+| Name          | Type      | Description                            |
+| ------------- | --------- | -------------------------------------- |
+| `_proposalId` | `uint256` | The id of the proposal to vote on      |
+| `_amount`     | `uint256` | The amount of votingToken to vote with |
 
 ### calculateFundingToBeReceived
 
-*Calculates the amount of fundingToken to be received by a proposal*
-
+_Calculates the amount of fundingToken to be received by a proposal_
 
 ```solidity
 function calculateFundingToBeReceived(uint256 _proposalId) public view tallyDatePassed returns (uint256);
 ```
+
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`_proposalId`|`uint256`|The id of the proposal to calculate the funding for|
+| Name          | Type      | Description                                         |
+| ------------- | --------- | --------------------------------------------------- |
+| `_proposalId` | `uint256` | The id of the proposal to calculate the funding for |
 
 **Returns**
 
-|Name|Type|Description|
-|----|----|-----------|
-|`<none>`|`uint256`|The amount of fundingToken to be received by the proposal|
-
+| Name     | Type      | Description                                               |
+| -------- | --------- | --------------------------------------------------------- |
+| `<none>` | `uint256` | The amount of fundingToken to be received by the proposal |
 
 ### distributeFunds
 
@@ -275,8 +253,7 @@ The funding to be received by a rejected proposal `p` is `0`.
 
 Can only be called after the tally date has passed
 
-*Distributes the funds to the proposals*
-
+_Distributes the funds to the proposals_
 
 ```solidity
 function distributeFunds() external nonReentrant tallyDatePassed;
@@ -286,8 +263,7 @@ function distributeFunds() external nonReentrant tallyDatePassed;
 
 Can only be called after the tally date has passed
 
-*Allows users to release their votingToken after the tally date has passed*
-
+_Allows users to release their votingToken after the tally date has passed_
 
 ```solidity
 function releaseVotingTokens() public nonReentrant tallyDatePassed;
@@ -297,16 +273,15 @@ function releaseVotingTokens() public nonReentrant tallyDatePassed;
 
 Allows users to withdraw their proportional share of remaining funds after distribution
 
-*This function can only be called after the tally date has passed and funds have been distributed*
+_This function can only be called after the tally date has passed and funds have been distributed_
 
-*The function calculates the user's share based on their initial deposit and the remaining funds*
+_The function calculates the user's share based on their initial deposit and the remaining funds_
 
-*State changes are made before the transfer to prevent reentrancy*
+_State changes are made before the transfer to prevent reentrancy_
 
-*Emits a RemainingFundsWithdrawn event upon successful withdrawal*
+_Emits a RemainingFundsWithdrawn event upon successful withdrawal_
 
-*This function does not take any parameters as it uses msg.sender to identify the user*
-
+_This function does not take any parameters as it uses msg.sender to identify the user_
 
 ```solidity
 function withdrawRemaining() public nonReentrant tallyDatePassed;
@@ -314,13 +289,11 @@ function withdrawRemaining() public nonReentrant tallyDatePassed;
 
 ### getProposal
 
-
 ```solidity
 function getProposal(uint256 _proposalId) public view returns (string memory, uint256, uint256, address);
 ```
 
 ### getProposalIdsByProposer
-
 
 ```solidity
 function getProposalIdsByProposer(address _proposer) public view returns (uint256[] memory);
@@ -328,13 +301,11 @@ function getProposalIdsByProposer(address _proposer) public view returns (uint25
 
 ### getTotalProposals
 
-
 ```solidity
 function getTotalProposals() public view returns (uint256);
 ```
 
 ### getMinRequestableAmount
-
 
 ```solidity
 function getMinRequestableAmount() public view returns (uint256);
@@ -342,13 +313,11 @@ function getMinRequestableAmount() public view returns (uint256);
 
 ### getMaxRequestableAmount
 
-
 ```solidity
 function getMaxRequestableAmount() public view returns (uint256);
 ```
 
 ### getTallyDate
-
 
 ```solidity
 function getTallyDate() public view returns (uint256);
@@ -356,13 +325,11 @@ function getTallyDate() public view returns (uint256);
 
 ### getFundingToken
 
-
 ```solidity
 function getFundingToken() public view returns (address);
 ```
 
 ### getVotingToken
-
 
 ```solidity
 function getVotingToken() public view returns (address);
@@ -370,13 +337,11 @@ function getVotingToken() public view returns (address);
 
 ### getVotingPowerToken
 
-
 ```solidity
 function getVotingPowerToken() public view returns (address);
 ```
 
 ### getTotalVotingPowerTokensMinted
-
 
 ```solidity
 function getTotalVotingPowerTokensMinted() public view returns (uint256);
@@ -384,13 +349,11 @@ function getTotalVotingPowerTokensMinted() public view returns (uint256);
 
 ### getTotalVotingPowerTokensUsed
 
-
 ```solidity
 function getTotalVotingPowerTokensUsed() public view returns (uint256);
 ```
 
 ### getTotalBalanceAvailbleForDistribution
-
 
 ```solidity
 function getTotalBalanceAvailbleForDistribution() public view returns (uint256);
@@ -398,13 +361,11 @@ function getTotalBalanceAvailbleForDistribution() public view returns (uint256);
 
 ### getTotalFundsDistributed
 
-
 ```solidity
 function getTotalFundsDistributed() public view returns (uint256);
 ```
 
 ### getVotingPowerOf
-
 
 ```solidity
 function getVotingPowerOf(address _voter) public view returns (uint256);
@@ -412,12 +373,12 @@ function getVotingPowerOf(address _voter) public view returns (uint256);
 
 ### getDeployer
 
-
 ```solidity
 function getDeployer() public view returns (address);
 ```
 
 ## Events
+
 ### FundingTokenDeposited
 
 ```solidity
@@ -467,109 +428,111 @@ event PlatformFeeSubmitted(address indexed platform, uint256 amount);
 ```
 
 ## Errors
-### FundingVault__AmountCannotBeZero
+
+### FundingVault\_\_AmountCannotBeZero
 
 ```solidity
 error FundingVault__AmountCannotBeZero();
 ```
 
-### FundingVault__MaxRequestableAmountCannotBeLessThanMinRequestableAmount
+### FundingVault\_\_MaxRequestableAmountCannotBeLessThanMinRequestableAmount
 
 ```solidity
 error FundingVault__MaxRequestableAmountCannotBeLessThanMinRequestableAmount();
 ```
 
-### FundingVault__MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount
+### FundingVault\_\_MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount
 
 ```solidity
 error FundingVault__MinRequestableAmountCannotBeGreaterThanMaxRequestableAmount();
 ```
 
-### FundingVault__CannotBeAZeroAddress
+### FundingVault\_\_CannotBeAZeroAddress
 
 ```solidity
 error FundingVault__CannotBeAZeroAddress();
 ```
 
-### FundingVault__MetadataCannotBeEmpty
+### FundingVault\_\_MetadataCannotBeEmpty
 
 ```solidity
 error FundingVault__MetadataCannotBeEmpty();
 ```
 
-### FundingVault__AmountExceededsLimit
+### FundingVault\_\_AmountExceededsLimit
 
 ```solidity
 error FundingVault__AmountExceededsLimit();
 ```
 
-### FundingVault__ProposalDoesNotExist
+### FundingVault\_\_ProposalDoesNotExist
 
 ```solidity
 error FundingVault__ProposalDoesNotExist();
 ```
 
-### FundingVault__AlreadyVoted
+### FundingVault\_\_AlreadyVoted
 
 ```solidity
 error FundingVault__AlreadyVoted();
 ```
 
-### FundingVault__TallyDateNotPassed
+### FundingVault\_\_TallyDateNotPassed
 
 ```solidity
 error FundingVault__TallyDateNotPassed();
 ```
 
-### FundingVault__NotEnoughBalance
+### FundingVault\_\_NotEnoughBalance
 
 ```solidity
 error FundingVault__NotEnoughBalance();
 ```
 
-### FundingVault__NoVotingPowerTokenMinted
+### FundingVault\_\_NoVotingPowerTokenMinted
 
 ```solidity
 error FundingVault__NoVotingPowerTokenMinted();
 ```
 
-### FundingVault__TransferFailed
+### FundingVault\_\_TransferFailed
 
 ```solidity
 error FundingVault__TransferFailed();
 ```
 
-### FundingVault__AlreadyDistributedFunds
+### FundingVault\_\_AlreadyDistributedFunds
 
 ```solidity
 error FundingVault__AlreadyDistributedFunds();
 ```
 
-### FundingVault__FundsNotDistributedYet
+### FundingVault\_\_FundsNotDistributedYet
 
 ```solidity
 error FundingVault__FundsNotDistributedYet();
 ```
 
-### FundingVault__NoFundsToWithdraw
+### FundingVault\_\_NoFundsToWithdraw
 
 ```solidity
 error FundingVault__NoFundsToWithdraw();
 ```
 
-### FundingVault__NoRemainingFundsToWithdraw
+### FundingVault\_\_NoRemainingFundsToWithdraw
 
 ```solidity
 error FundingVault__NoRemainingFundsToWithdraw();
 ```
 
-### FundingVault__WithdrawableAmountTooSmall
+### FundingVault\_\_WithdrawableAmountTooSmall
 
 ```solidity
 error FundingVault__WithdrawableAmountTooSmall();
 ```
 
 ## Structs
+
 ### Proposal
 
 ```solidity
@@ -580,4 +543,3 @@ struct Proposal {
     address recipient;
 }
 ```
-

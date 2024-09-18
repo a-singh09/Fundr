@@ -29,7 +29,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {MockVotingPowerToken} from "./MockVotingPowerToken.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {MockFairFund} from "./MockFairFund.sol";
+import {MockFundr} from "./MockFundr.sol";
 
 /**
  * @title FundingVault
@@ -79,7 +79,7 @@ contract MockFundingVault is ReentrancyGuard {
     IERC20 private immutable i_fundingToken;
     IERC20 private immutable i_votingToken;
     MockVotingPowerToken private immutable i_votingPowerToken;
-    MockFairFund private immutable i_deployer;
+    MockFundr private immutable i_deployer;
 
     uint256 private s_minRequestableAmount;
     uint256 private s_maxRequestableAmount;
@@ -122,7 +122,7 @@ contract MockFundingVault is ReentrancyGuard {
      * @param _minRequestableAmount The minimum amount of token that can be requested in proposal
      * @param _maxRequestableAmount The maximum amount of token that can be requested in proposal
      * @param _tallyDate The date in which the tally will be taken as seconds since unix epoch
-     * @param _deployer The address of the main fairfund smart contract
+     * @param _deployer The address of the main Fundr smart contract
      */
     constructor(
         address _fundingToken,
@@ -142,7 +142,7 @@ contract MockFundingVault is ReentrancyGuard {
         s_totalBalanceAvailableForDistribution = 0;
         s_totalFundsDistributed = 0;
         s_fundsDistributed = false;
-        i_deployer = MockFairFund(_deployer);
+        i_deployer = MockFundr(_deployer);
     }
 
     /**

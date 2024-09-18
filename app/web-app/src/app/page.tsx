@@ -50,7 +50,7 @@ export default function Home() {
                             dmSerifDisplay.className
                         )}
                     >
-                        FairFund
+                        Fundr
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-8">
                         Empowering communities through on-chain funding.

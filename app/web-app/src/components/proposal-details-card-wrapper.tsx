@@ -93,8 +93,7 @@ export default function ProposalDetailsCardWrapper({
                             </CardTitle>
                             <CardDescription>
                                 The links provided by the proposers are not
-                                verified by fairfund, please proceed with
-                                caution.
+                                verified by Fundr, please proceed with caution.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>

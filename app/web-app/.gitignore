@@ -38,7 +38,7 @@ next-env.d.ts
 
 # blockchain abis
 /src/blockchain/out/*
-!/src/blockchain/out/FairFund.sol
+!/src/blockchain/out/Fundr.sol
 !/src/blockchain/out/FundingVault.sol
 !/src/blockchain/out/ERC20.sol
 

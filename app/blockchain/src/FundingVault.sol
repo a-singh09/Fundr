@@ -28,7 +28,7 @@ pragma solidity ^0.8.20;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {VotingPowerToken} from "./VotingPowerToken.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {FairFund} from "./FairFund.sol";
+import {Fundr} from "./Fundr.sol";
 
 /**
  * @title FundingVault
@@ -78,7 +78,7 @@ contract FundingVault is ReentrancyGuard {
     IERC20 private immutable i_fundingToken;
     IERC20 private immutable i_votingToken;
     VotingPowerToken private immutable i_votingPowerToken;
-    FairFund private immutable i_deployer;
+    Fundr private immutable i_deployer;
 
     uint256 private s_minRequestableAmount;
     uint256 private s_maxRequestableAmount;
@@ -123,7 +123,7 @@ contract FundingVault is ReentrancyGuard {
      * @param _minRequestableAmount The minimum amount of token that can be requested in proposal
      * @param _maxRequestableAmount The maximum amount of token that can be requested in proposal
      * @param _tallyDate The date in which the tally will be taken as seconds since unix epoch
-     * @param _deployer The address of the main fairfund smart contract
+     * @param _deployer The address of the main Fundr smart contract
      */
     constructor(
         address _fundingToken,
@@ -143,7 +143,7 @@ contract FundingVault is ReentrancyGuard {
         s_totalBalanceAvailableForDistribution = 0;
         s_totalFundsDistributed = 0;
         s_fundsDistributed = false;
-        i_deployer = FairFund(_deployer);
+        i_deployer = Fundr(_deployer);
     }
 
     /**

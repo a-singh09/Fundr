@@ -10,9 +10,9 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-    title: 'FairFund',
+    title: 'Fundr',
     description:
-        'FairFund is a blockchain based platform for community-driven funding. Users can deploy funding vaults, deposit funds, and submit proposals for funding. The platform uses a voting mechanism to decide which proposals receive funding.',
+        'Fundr is a blockchain based platform for community-driven funding. Users can deploy funding vaults, deposit funds, and submit proposals for funding. The platform uses a voting mechanism to decide which proposals receive funding.',
 };
 
 export default function RootLayout({
