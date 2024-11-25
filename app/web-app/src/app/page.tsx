@@ -7,6 +7,7 @@ import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right';
 import ShieldCheck from 'lucide-react/dist/esm/icons/shield-check';
 import Users from 'lucide-react/dist/esm/icons/users';
 import Lightbulb from 'lucide-react/dist/esm/icons/lightbulb';
+import BookMarked from 'lucide-react/dist/esm/icons/book-marked';
 
 const dmSerifDisplay = DM_Serif_Display({
     subsets: ['latin'],
@@ -79,6 +80,14 @@ export default function Home() {
                     />
                 </div>
                 <div className="w-full flex justify-center">
+                    <Link
+                        href="https://github.com/a-singh09/Fundr?tab=readme-ov-file#usage-guide"
+                        className="mx-4"
+                    >
+                        <Button className="rounded-full text-lg px-8 py-6">
+                            <BookMarked className="mr-2" /> Read Instructions
+                        </Button>
+                    </Link>
                     <Link href="/dashboard" className="">
                         <Button className="rounded-full text-lg px-8 py-6">
                             Get Started <ArrowRight className="ml-2" />
